@@ -75,16 +75,16 @@ def handler(event, context):
 
         if element['eventName'] in ['MODIFY', 'INSERT']:
             obj = {k: deserializer.deserialize(v) for k,v in element['dynamodb']['NewImage'].items()}
-            obj['event'] = element['eventName']
-            obj['eventId'] = element['eventID']
-            obj['eventDate'] = element['dynamodb']['ApproximateCreationDateTime']
+            obj['pipelineEvent'] = element['eventName']
+            obj['pipelineEventId'] = element['eventID']
+            obj['pipelineEventDate'] = element['dynamodb']['ApproximateCreationDateTime']
             final_records.append(obj)
 
         elif element['eventName'] == 'REMOVE':
             obj = {k: deserializer.deserialize(v) for k,v in element['dynamodb']['OldImage'].items()}
-            obj['event'] = element['eventName']
-            obj['eventId'] = element['eventID']
-            obj['eventDate'] = element['dynamodb']['ApproximateCreationDateTime']
+            obj['pipelineEvent'] = element['eventName']
+            obj['pipelineEventId'] = element['eventID']
+            obj['pipelineEventDate'] = element['dynamodb']['ApproximateCreationDateTime']
             final_records.append(obj)
 
         else:

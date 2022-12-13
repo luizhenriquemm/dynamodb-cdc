@@ -24,7 +24,7 @@ Before using the stream, it's needed to create the lambda function, in the AWS L
 
 ![image](https://user-images.githubusercontent.com/68759905/207459846-f242084e-e774-4e39-b625-ea839fb35d2e.png)
 
-After created, you can update the lambda_function.py script into the function. This script is avaliable here in this repo.
+After created, you can upload the lambda_function.py script into the function. This script is avaliable here in this repo.
 
 You also need to set the environment variables:
 

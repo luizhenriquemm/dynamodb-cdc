@@ -31,15 +31,19 @@ You also need to set the environment variables:
 ![image](https://user-images.githubusercontent.com/68759905/207466526-371ddf2a-5be5-4979-abd3-b87bcb4aafd2.png)
 
 > **KAFKA_HOSTS**
-> A list of kafka servers for sending the daata.
+> 
+> A list of kafka servers for sending the data.
 
 > **KAFKA_SERVER_NAME**
+> 
 > This variable will be use for getting the secret in the AWS Secrets Manager for the kafka connection.
 
 > **OUTPUT_PATH**
+> 
 > The lambda function save the data in the kafka topic and in the AWS S3. Here you'll pass the main path for the data, by example, if you use "s3://mybucket/ingestion/" here, the function will append the table name in the path, the data will be saved in "s3://mybucket/ingestion/mytable/".
 
 > **STS_ROLE_ARN**
+> 
 > The function allows you to save the data in other AWS account, if it's the case, just type the role ARN of the destiny account in this variable and the function will use de S3 of this account. Don't forget that you have to setup the permissions for this.
 
 

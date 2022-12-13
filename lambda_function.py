@@ -37,7 +37,7 @@ def save_as_file(
     else:
         raise Exception(f"The protocol {protocol} is not supported.")
         
-def handler(event, context):
+def lambda_handler(event, context):
     uuid_v4 = str(uuid.uuid4())
     
     KAFKA_HOSTS = os.getenv('KAFKA_HOSTS', None).split(',')

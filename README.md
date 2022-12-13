@@ -14,4 +14,8 @@ After that, it will show the stream informations:
 
 ![image](https://user-images.githubusercontent.com/68759905/207458048-055fb4b3-feaf-4410-9513-79994caca309.png)
 
-a
+Before using the stream, it's needed to create the lambda function, the sc
+
+![image](https://user-images.githubusercontent.com/68759905/207459426-8fb28828-b048-494e-bcc2-f8b15a68028b.png)
+
+![image](https://user-images.githubusercontent.com/68759905/207459846-f242084e-e774-4e39-b625-ea839fb35d2e.png)

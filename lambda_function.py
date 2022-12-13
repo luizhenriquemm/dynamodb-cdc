@@ -12,6 +12,9 @@ def save_as_file(
 
     if path is None or dict is None:
         raise Exception("Invalid call: Missing one of two attributes. \n Example: save_as_file('s3://bucket/pre/fix/', {'some': 'data'})")
+        
+    if arn == "":
+        arn = None
 
     protocol = path.split(":")[0]
     if protocol == "s3":
@@ -21,16 +24,19 @@ def save_as_file(
         ts = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
         eventdatepartition = "eventdatepartition=" + ts.split("T")[0] + "/"
 
-        sts = boto3.client('sts').assume_role(RoleArn=arn, RoleSessionName="DataIngestionPipelineSession")
-        resource = boto3.resource(
-            's3', 
-            aws_access_key_id=sts['Credentials']['AccessKeyId'], 
-            aws_secret_access_key=sts['Credentials']['SecretAccessKey'],
-            aws_session_token=sts['Credentials']['SessionToken'])
+        if arn is not None:
+            sts = boto3.client('sts').assume_role(RoleArn=arn, RoleSessionName="DataIngestionPipelineSession")
+            resource = boto3.resource(
+                's3', 
+                aws_access_key_id=sts['Credentials']['AccessKeyId'], 
+                aws_secret_access_key=sts['Credentials']['SecretAccessKey'],
+                aws_session_token=sts['Credentials']['SessionToken'])
+        else:
+            resource = boto3.resource('s3')
 
         resource.Object(bucket, folder + eventdatepartition + ts + ".json").put(
             Body=(bytes(sjson.dumps(data).encode('utf-8')))
-            )
+        )
             
         return f"s3://{bucket}/{folder}{eventdatepartition}{ts}.json"
 

@@ -113,7 +113,7 @@ def lambda_handler(event, context):
         print(f"[{uuid_v4}] Error while save_as_file:", str(e))
         print(f"[{uuid_v4}] The data will be send to the Kafka cluster anyway", str(e))
 
-    producer.send(f'data-ingestion-pipeline-{table_name}', task_op)
+    producer.send(f'dynamodb-cdc-{table_name}', task_op)
     print(f"[{uuid_v4}] Send message - Call flush (wait)")
     producer.flush()
     print(f"[{uuid_v4}] Messages Sent to Kafka Topic")

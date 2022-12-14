@@ -24,9 +24,11 @@ Before using the stream, it's needed to create the lambda function, in the AWS L
 
 ![image](https://user-images.githubusercontent.com/68759905/207459846-f242084e-e774-4e39-b625-ea839fb35d2e.png)
 
-After created, you can upload the lambda_function.py script into the function. This script is avaliable here in this repo.
+After created, you can upload the lambda_function.py script into the function. This script is avaliable here in this repo. It will stay like this:
 
-You also need to set the environment variables:
+![image](https://user-images.githubusercontent.com/68759905/207726972-ebce048e-d2d3-4b62-9790-6e310c6a8a1a.png)
+
+After the code is done, you also need to set the environment variables:
 
 ![image](https://user-images.githubusercontent.com/68759905/207466526-371ddf2a-5be5-4979-abd3-b87bcb4aafd2.png)
 
@@ -45,5 +47,19 @@ You also need to set the environment variables:
 > **STS_ROLE_ARN**
 > 
 > The function allows you to save the data in other AWS account, if it's the case, just type the role ARN of the destiny account in this variable and the function will use de S3 of this account. Don't forget that you have to setup the permissions for this.
+
+Right now the lambda function is ready to be used on DynamoDB trigger.
+
+## Setting lambda role permissions
+
+Be
+
+## Creating the trigger
+
+To get more easy, in the DynamoDB table page, go again in the "Exports and streams" tab and in "DynamoDB stream details" block, click on "Create trigger" button, this form will be showed to you:
+
+![image](https://user-images.githubusercontent.com/68759905/207727197-a20770e1-9913-4bc9-86eb-d7e4821c147f.png)
+
+This part is simple, just select the lambda function that we created earlier and choose the "Batch size" value. As explained in the page, this parameter is the number of events that the function will process in the same execution. The ideal value will depends on the table row size, how often the events occours and the json size that you expect in the S3 in the end or the message size in the kafka topic. My sugestion is to choose a start value and tune it later.
 
 

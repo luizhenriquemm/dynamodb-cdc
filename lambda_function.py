@@ -46,7 +46,7 @@ def save_as_file(
 def lambda_handler(event, context):
     uuid_v4 = str(uuid.uuid4())
     
-    KAFKA_HOSTS = os.getenv('KAFKA_HOSTS', None).split(',')
+    KAFKA_HOSTS = os.getenv('KAFKA_HOSTS', None)
     KAFKA_SERVER_NAME = os.getenv('KAFKA_SERVER_NAME', None)
     OUTPUT_PATH = os.getenv('OUTPUT_PATH', None)
     STS_ROLE_ARN = os.getenv('STS_ROLE_ARN', None)
@@ -54,19 +54,21 @@ def lambda_handler(event, context):
     print(f"[{uuid_v4}] KAFKA_HOSTS: {KAFKA_HOSTS}")
     print(f"[{uuid_v4}] KAFKA_SERVER_NAME: {KAFKA_SERVER_NAME}")
     print(f"[{uuid_v4}] OUTPUT_PATH: {OUTPUT_PATH}")
-
-    credentials = sjson.loads(boto3.client('secretsmanager').get_secret_value(SecretId=KAFKA_SERVER_NAME)['SecretString'])
-    producer = KafkaProducer(
-            bootstrap_servers=KAFKA_HOSTS,
-            security_protocol='SASL_SSL',
-            sasl_mechanism="SCRAM-SHA-512",
-            sasl_plain_username=credentials['username'],
-            sasl_plain_password=credentials['password'],
-            acks='all',
-            request_timeout_ms=5000,
-            max_block_ms=10000,
-            api_version=(2, 7, 0),
-            value_serializer=lambda v: sjson.dumps(v).encode('utf-8'))
+    
+    if KAFKA_HOSTS is not None:
+        KAFKA_HOSTS = KAFKA_HOSTS.split(',')
+        credentials = sjson.loads(boto3.client('secretsmanager').get_secret_value(SecretId=KAFKA_SERVER_NAME)['SecretString'])
+        producer = KafkaProducer(
+                bootstrap_servers=KAFKA_HOSTS,
+                security_protocol='SASL_SSL',
+                sasl_mechanism="SCRAM-SHA-512",
+                sasl_plain_username=credentials['username'],
+                sasl_plain_password=credentials['password'],
+                acks='all',
+                request_timeout_ms=5000,
+                max_block_ms=10000,
+                api_version=(2, 7, 0),
+                value_serializer=lambda v: sjson.dumps(v).encode('utf-8'))
     
     arn = event['Records'][0]['eventSourceARN']
     start = arn.index('table/') + len('table/')
@@ -113,10 +115,13 @@ def lambda_handler(event, context):
         print(f"[{uuid_v4}] Error while save_as_file:", str(e))
         print(f"[{uuid_v4}] The data will be send to the Kafka cluster anyway", str(e))
 
-    producer.send(f'dynamodb-cdc-{table_name}', task_op)
-    print(f"[{uuid_v4}] Send message - Call flush (wait)")
-    producer.flush()
-    print(f"[{uuid_v4}] Messages Sent to Kafka Topic")
+    if KAFKA_HOSTS is not None:
+        producer.send(f'dynamodb-cdc-{table_name}', task_op)
+        print(f"[{uuid_v4}] Send message - Call flush (wait)")
+        producer.flush()
+        print(f"[{uuid_v4}] Messages Sent to Kafka Topic")
+    else:
+        print(f"[{uuid_v4}] KAFKA_HOSTS is not defined, ignored this feature.")
 
     print(f"[{uuid_v4}] Data processed.")
     return "Data processed."

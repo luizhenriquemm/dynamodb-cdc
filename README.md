@@ -52,7 +52,7 @@ Right now the lambda function is ready to be used on DynamoDB trigger.
 
 ## Setting lambda role permissions
 
-Be
+To the lambda function be able to interact with the stream, it will need some permissions and we have to set it manually. When you create a lambda function, the plaform creates a role in the AWS IAM for the function execution, in other words, this rule should contain all the permissions, otherwise the function wont be able to do anything. In our case, the function needs to interact with the DynamoDB stream and save data in the S3, so we need to set the right permissions for that.
 
 ## Creating the trigger
 
